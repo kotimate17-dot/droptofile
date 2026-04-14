@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FleshToGo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg1: #05070d;
+      --bg2: #09111f;
+      --panel: rgba(10, 16, 28, 0.84);
+      --panel2: rgba(13, 20, 34, 0.92);
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #eef4ff;
+      --muted: rgba(255, 255, 255, 0.62);
+      --accent: #7cb4ff;
+      --accent2: #5a8fff;
+      --danger: #ff5d74;
+      --success: #79f2cf;
+      --chip: rgba(255,255,255,0.04);
+      --shadow: 0 24px 60px rgba(0,0,0,0.35);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(68, 131, 255, 0.16), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(0, 120, 255, 0.12), transparent 24%),
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
+      overflow-x: hidden;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 28px 18px;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 1180px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .hero,
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .hero {
+      min-height: 720px;
+      position: relative;
+      overflow: hidden;
+      padding: 34px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,0.02), transparent 20%, transparent 80%, rgba(255,255,255,0.02));
+      pointer-events: none;
+    }
+
+    .ghost-phone {
+      position: absolute;
+      left: 34px;
+      bottom: 120px;
+      width: 52px;
+      height: 110px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+      opacity: 0.65;
+    }
+
+    .ghost-monitor {
+      position: absolute;
+      right: 54px;
+      bottom: 130px;
+      width: 120px;
+      height: 58px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.02);
+      opacity: 0.5;
+    }
+
+    .ghost-monitor::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -10px;
+      width: 54px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .content-box {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 560px;
+      margin: 0 auto;
+      background: rgba(10, 16, 28, 0.72);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.28);
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.7px;
+      color: rgba(255,255,255,0.42);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0 0 14px 0;
+      line-height: 1.02;
+      font-size: clamp(34px, 3vw, 54px);
+      letter-spacing: -1.8px;
+    }
+
+    .lead {
+      margin: 0 0 18px 0;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 14px;
+    }
+
+    .muted-end {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.34);
+    }
+
+    .main-input {
+      width: 100%;
+      padding: 15px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.035);
+      color: white;
+      outline: none;
+      font: inherit;
+      margin-bottom: 12px;
+    }
+
+    .main-input::placeholder {
+      color: rgba(255,255,255,0.26);
+    }
+
+    .main-input:focus {
+      border-color: rgba(124,180,255,0.35);
+      box-shadow: 0 0 0 3px rgba(124,180,255,0.08);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 16px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.18s ease;
+      font-size: 13px;
+      min-height: 44px;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #8cc1ff, #5f95ff);
+      color: #07111d;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.04);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .btn-danger {
+      background: rgba(255,93,116,0.13);
+      color: #ffb3bf;
+      border: 1px solid rgba(255,93,116,0.18);
+    }
+
+    .btn-success {
+      background: rgba(121,242,207,0.12);
+      color: var(--success);
+      border: 1px solid rgba(121,242,207,0.18);
+    }
+
+    .panel {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar h2 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: -1px;
+    }
+
+    .topbar .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .flash {
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .flash.show {
+      display: block;
+    }
+
+    .flash.ok {
+      color: var(--success);
+      background: rgba(121,242,207,0.08);
+      border: 1px solid rgba(121,242,207,0.14);
+    }
+
+    .flash.err {
+      color: #ffb8c2;
+      background: rgba(255,93,116,0.10);
+      border: 1px solid rgba(255,93,116,0.16);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat {
+      background: var(--panel2);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .stat .k {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,0.42);
+      margin-bottom: 8px;
+    }
+
+    .stat .v {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .stat .s {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .block {
+      background: var(--panel2);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 16px;
+    }
+
+    .block h3 {
+      margin: 0 0 12px 0;
+      font-size: 16px;
+    }
+
+    .block p.small {
+      margin: -4px 0 12px 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .code-box {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: 4px;
+      margin: 8px 0 14px 0;
+    }
+
+    .permissions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .perm {
+      background: var(--chip);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 999px;
+      padding: 10px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .perm button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .on {
+      background: linear-gradient(90deg, #8cc1ff, #5f95ff);
+      color: #07111d;
+    }
+
+    .off {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.74);
+    }
+
+    .chat-box {
+      height: 220px;
+      overflow-y: auto;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 12px;
+      margin-top: 12px;
+    }
+
+    .msg-row {
+      display: flex;
+      margin-bottom: 10px;
+    }
+
+    .mine {
+      justify-content: flex-end;
+    }
+
+    .other {
+      justify-content: flex-start;
+    }
+
+    .bubble {
+      max-width: 76%;
+      padding: 10px 12px;
+      border-radius: 15px;
+      font-size: 14px;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .bubble.mine {
+      background: linear-gradient(90deg, #8cc1ff, #5f95ff);
+      color: #07111d;
+    }
+
+    .bubble.other {
+      background: rgba(255,255,255,0.06);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .sys {
+      color: rgba(255,255,255,0.45);
+      font-size: 13px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .item {
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .item-title {
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .item-meta {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    .link {
+      color: #9ec7ff;
+      text-decoration: none;
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      resize: vertical;
+      min-height: 92px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.035);
+      color: white;
+      font: inherit;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: rgba(124,180,255,0.35);
+      box-shadow: 0 0 0 3px rgba(124,180,255,0.08);
+    }
+
+    input[type="file"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.035);
+      color: white;
+    }
+
+    .pending-box {
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .pending-name {
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 1080px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: 560px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .stats,
+      .grid2 {
+        grid-template-columns: 1fr;
+      }
+
+      .btn-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="shell">
+      <section class="hero">
+        <div class="ghost-phone"></div>
+        <div class="ghost-monitor"></div>
+
+        <div class="content-box">
+          <div class="eyebrow">Biztonságos és gyors eszközpárosítás</div>
+          <h1>Párosítsd készülékeidet könnyedén a FleshToGo segítségével.</h1>
+          <p class="lead">
+            Küldj fotókat, jegyzeteket és dokumentumokat titkosított kapcsolatnak ható, letisztult felületen keresztül.
+            Nincs regisztráció. Nincs szemét. Csak megnyitod, párosítod, és kész.
+          </p>
+
+          <input id="deviceName" class="main-input" placeholder="Ez az eszköz neve pl. Andris iPhone 8" />
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="generateCode()">Kód generálás</button>
+            <button class="btn btn-secondary" onclick="focusJoin()">Csatlakozás QR kóddal</button>
+            <button class="btn btn-secondary" onclick="joinCode()">Csatlakozás</button>
+          </div>
+          <div class="muted-end">Tervezte és készítette: KM & Zsani</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="topbar">
+          <div>
+            <h2>FleshToGo Control</h2>
+            <div class="sub">Most már nem csak dizájn — működik is.</div>
+          </div>
+        </div>
+
+        <div id="flashOk" class="flash ok"></div>
+        <div id="flashErr" class="flash err"></div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="k">Kapcsolat</div>
+            <div class="v" id="statusText">Offline</div>
+            <div class="s">Állapot</div>
+          </div>
+          <div class="stat">
+            <div class="k">Szerep</div>
+            <div class="v" id="roleText">-</div>
+            <div class="s">Host / Guest</div>
+          </div>
+          <div class="stat">
+            <div class="k">Kód</div>
+            <div class="v" id="codeText">------</div>
+            <div class="s">Aktív szoba</div>
+          </div>
+        </div>
+
+        <div class="block">
+          <h3>Párosítás</h3>
+          <p class="small">Ha még nincs szobád, generálj kódot. Ha kaptál kódot, itt csatlakozz.</p>
+
+          <div class="grid2">
+            <div>
+              <div class="code-box" id="bigCode">------</div>
+              <button class="btn btn-primary" style="width:100%" onclick="generateCode()">Új kód</button>
+            </div>
+
+            <div>
+              <input id="joinCodeInput" class="main-input" placeholder="Írd be a 6 jegyű kódot" maxlength="6" />
+              <div class="btn-row">
+                <button class="btn btn-secondary" onclick="joinCode()">Csatlakozás</button>
+                <button class="btn btn-danger" onclick="unpair()">Párosítás törlése</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="pendingBox" class="pending-box" style="display:none;">
+            <div class="pending-name" id="pendingName">Csatlakozási kérés érkezett</div>
+            <div class="btn-row">
+              <button class="btn btn-success" onclick="decision('approve')">Elfogadás</button>
+              <button class="btn btn-danger" onclick="decision('reject')">Elutasítás</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="block">
+          <h3>Engedélyek</h3>
+          <div class="permissions" id="permissionsBox">
+            <div class="sys">Nincs aktív kapcsolat.</div>
+          </div>
+        </div>
+
+        <div class="block">
+          <h3>Üzenetküldés</h3>
+          <textarea id="messageText" placeholder="Írj üzenetet a másik eszköznek..."></textarea>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="sendMessage()">Üzenet küldése</button>
+          </div>
+
+          <div class="chat-box" id="chatBox">
+            <div class="sys">Még nincs üzenet.</div>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="block">
+            <h3>Jegyzet</h3>
+            <textarea id="noteText" placeholder="Gyors jegyzet, amit át akarsz dobni..."></textarea>
+            <div class="btn-row">
+              <button class="btn btn-secondary" onclick="sendNote()">Jegyzet küldése</button>
+            </div>
+          </div>
+
+          <div class="block">
+            <h3>Fájl küldése</h3>
+            <input id="fileInput" type="file" />
+            <div class="btn-row">
+              <button class="btn btn-secondary" onclick="sendFile()">Fájl feltöltése</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="block">
+          <h3>Átvitelek</h3>
+          <div id="transfersList" class="list">
+            <div class="sys">Még nincs semmi.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    let currentRoom = null;
+
+    function showOk(text) {
+      const el = document.getElementById("flashOk");
+      const err = document.getElementById("flashErr");
+      err.classList.remove("show");
+      el.textContent = text;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 2600);
+    }
+
+    function showErr(text) {
+      const el = document.getElementById("flashErr");
+      const ok = document.getElementById("flashOk");
+      ok.classList.remove("show");
+      el.textContent = text;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 3200);
+    }
+
+    async function api(url, method = "GET", body = null, isForm = false) {
+      const options = {
+        method,
+        credentials: "same-origin"
+      };
+
+      if (body) {
+        if (isForm) {
+          options.body = body;
+        } else {
+          options.headers = {
+            "Content-Type": "application/json"
+          };
+          options.body = JSON.stringify(body);
+        }
+      }
+
+      const res = await fetch(url, options);
+      return res.json();
+    }
+
+    function focusJoin() {
+      document.getElementById("joinCodeInput").focus();
+    }
+
+    function renderPermissions(room) {
+      const box = document.getElementById("permissionsBox");
+
+      if (!room || !room.permissions) {
+        box.innerHTML = '<div class="sys">Nincs aktív kapcsolat.</div>';
+        return;
+      }
+
+      const keys = Object.keys(room.permissions);
+      box.innerHTML = keys.map(key => {
+        const enabled = room.permissions[key];
+        return `
+          <div class="perm">
+            <span>${key}</span>
+            <button class="${enabled ? "on" : "off"}" onclick="togglePermission('${key}')">
+              ${enabled ? "BE" : "KI"}
+            </button>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderTransfers(room) {
+      const list = document.getElementById("transfersList");
+      const chatBox = document.getElementById("chatBox");
+
+      if (!room || !room.transfers || !room.transfers.length) {
+        list.innerHTML = '<div class="sys">Még nincs semmi.</div>';
+        chatBox.innerHTML = '<div class="sys">Még nincs üzenet.</div>';
+        return;
+      }
+
+      list.innerHTML = room.transfers.slice().reverse().map(item => {
+        if (item.kind === "message" || item.kind === "note") {
+          return `
+            <div class="item">
+              <div class="item-title">${item.title}</div>
+              <div>${item.body || ""}</div>
+              <div class="item-meta">Feladó: ${item.from_role}</div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="item">
+            <div class="item-title">${item.title}</div>
+            <div>${item.file_name || ""}</div>
+            <div class="item-meta">
+              <a class="link" href="${item.download_url}" target="_blank">Letöltés</a> · Feladó: ${item.from_role}
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const msgs = room.transfers.filter(x => x.kind === "message");
+      if (!msgs.length) {
+        chatBox.innerHTML = '<div class="sys">Még nincs üzenet.</div>';
+      } else {
+        chatBox.innerHTML = msgs.map(msg => {
+          const mine = msg.from_role === currentRoom.role;
+          return `
+            <div class="msg-row ${mine ? "mine" : "other"}">
+              <div class="bubble ${mine ? "mine" : "other"}">${msg.body || ""}</div>
+            </div>
+          `;
+        }).join("");
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    }
+
+    function renderState(data) {
+      const room = data.room;
+      currentRoom = room;
+
+      const statusText = document.getElementById("statusText");
+      const roleText = document.getElementById("roleText");
+      const codeText = document.getElementById("codeText");
+      const bigCode = document.getElementById("bigCode");
+      const pendingBox = document.getElementById("pendingBox");
+      const pendingName = document.getElementById("pendingName");
+
+      if (!room) {
+        statusText.textContent = "Offline";
+        roleText.textContent = "-";
+        codeText.textContent = "------";
+        bigCode.textContent = "------";
+        pendingBox.style.display = "none";
+        renderPermissions(null);
+        renderTransfers(null);
+        return;
+      }
+
+      statusText.textContent = room.status === "paired" ? "Aktív" : room.status;
+      roleText.textContent = room.role || "-";
+      codeText.textContent = room.code || "------";
+      bigCode.textContent = room.code || "------";
+
+      if (room.pending_request && room.role === "host") {
+        pendingBox.style.display = "block";
+        pendingName.textContent = `${room.pending_request.device_name} csatlakozni akar`;
+      } else {
+        pendingBox.style.display = "none";
+      }
+
+      renderPermissions(room);
+      renderTransfers(room);
+    }
+
+    async function refreshState() {
+      try {
+        const data = await api("/api/state");
+        renderState(data);
+      } catch (e) {
+        showErr("Nem sikerült frissíteni az állapotot.");
+      }
+    }
+
+    async function generateCode() {
+      const device_name = document.getElementById("deviceName").value.trim();
+      const data = await api("/api/pairing/generate", "POST", { device_name });
+
+      if (!data.ok) {
+        showErr(data.error || "Nem sikerült kódot generálni.");
+        return;
+      }
+
+      showOk(data.message || "Kód generálva.");
+      await refreshState();
+    }
+
+    async function joinCode() {
+      const code = document.getElementById("joinCodeInput").value.trim().toUpperCase();
+      const device_name = document.getElementById("deviceName").value.trim();
+
+      if (!code) {
+        showErr("Írj be egy kódot.");
+        return;
+      }
+
+      const data = await api("/api/pairing/join", "POST", { code, device_name });
+
+      if (!data.ok) {
+        showErr(data.error || "Nem sikerült csatlakozni.");
+        return;
+      }
+
+      showOk("Csatlakozási kérés elküldve.");
+      await refreshState();
+    }
+
+    async function decision(decisionValue) {
+      const data = await api("/api/pairing/decision", "POST", { decision: decisionValue });
+
+      if (!data.ok) {
+        showErr(data.error || "Nem sikerült végrehajtani.");
+        return;
+      }
+
+      showOk(decisionValue === "approve" ? "Kapcsolat elfogadva." : "Kérés elutasítva.");
+      await refreshState();
+    }
+
+    async function unpair() {
+      const data = await api("/api/pairing/unpair", "POST");
+      if (!data.ok) {
+        showErr(data.error || "Nem sikerült törölni a kapcsolatot.");
+        return;
+      }
+
+      showOk("Kapcsolat törölve.");
+      await refreshState();
+    }
+
+    async function togglePermission(permission) {
+      const data = await api("/api/permissions/toggle", "POST", { permission });
+
+      if (!data.ok) {
+        showErr(data.error || "Nem sikerült módosítani.");
+        return;
+      }
+
+      showOk(`${permission} módosítva.`);
+      await refreshState();
+    }
+
+    async function sendMessage() {
+      const message = document.getElementById("messageText").value.trim();
+      if (!message) {
+        showErr("Írj üzenetet.");
+        return;
+      }
+
+      const data = await api("/api/send/message", "POST", { message });
+      if (!data.ok) {
+        showErr(data.error || "Nem sikerült elküldeni.");
+        return;
+      }
+
+      document.getElementById("messageText").value = "";
+      showOk("Üzenet elküldve.");
+      await refreshState();
+    }
+
+    async function sendNote() {
+      const note = document.getElementById("noteText").value.trim();
+      if (!note) {
+        showErr("Írj jegyzetet.");
+        return;
+      }
+
+      const data = await api("/api/send/note", "POST", { note });
+      if (!data.ok) {
+        showErr(data.error || "Nem sikerült elküldeni.");
+        return;
+      }
+
+      document.getElementById("noteText").value = "";
+      showOk("Jegyzet elküldve.");
+      await refreshState();
+    }
+
+    async function sendFile() {
+      const file = document.getElementById("fileInput").files[0];
+      if (!file) {
+        showErr("Válassz fájlt.");
+        return;
+      }
+
+      const form = new FormData();
+      form.append("file", file);
+
+      const data = await api("/api/send/file", "POST", form, true);
+      if (!data.ok) {
+        showErr(data.error || "Nem sikerült feltölteni.");
+        return;
+      }
+
+      document.getElementById("fileInput").value = "";
+      showOk("Fájl elküldve.");
+      await refreshState();
+    }
+
+    refreshState();
+    setInterval(refreshState, 3000);
+  </script>
+</body>
+</html>

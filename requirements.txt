@@ -1,5 +1,5 @@
 Flask
-gunicorn
 Werkzeug
 qrcode
 Pillow
+gunicorn
